@@ -19,25 +19,11 @@
 #define COMANDO_FIM -1
 #define YYDEBUG 1
 
-//#define CODE_FUNCTION 1
-//#define CODE_EXIT 2
-//#define CODE_OPR_ADD 3
-//#define CODE_OPR_ZERO 4
-//#define CODE_WHILE 5
-//#define CODE_EQUAL 6
-//#define CODE_IF 8
-//#define CODE_IF_NOT 9
-//#define CODE_END -1
-//#define YYDEBUG 1
-
 extern int yylex();
 int yyerror(char *s);
 extern FILE *yyin;
 extern int yyparse();
 FILE *cFile;
-
-
-
 void openFile(){
     cFile = fopen("Saida.c","w+");
     if (cFile == NULL){
@@ -91,9 +77,6 @@ void provolOneToC(LLIST *llist){
             }
             default:
                 break;
-        }
-        if(llist->prox == NULL){
-            printf("monkey time\n");
         }
         llist = llist->prox;
     }
