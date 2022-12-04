@@ -1,8 +1,8 @@
 %option yywrap
 
 /*
-    Lucca Vieira Rocha      >2011342
-    João Vitor Godinho
+    Lucca Vieira Rocha                  >2011342
+    João Victor Godinho Woitschach      >2011401
  */
 	#include <stdio.h>
 	#include "y.tab.h"
