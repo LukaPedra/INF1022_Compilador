@@ -8,66 +8,70 @@
 
 
 #define COMANDO_ENTRADA 1
-#define COMANDO_ENTRADA 2
-#define COMANDO_ENTRADA 1
-
-#define CODE_FUNCTION 1
-#define CODE_EXIT 2
-#define CODE_OPR_ADD 3
-#define CODE_OPR_ZERO 4
-#define CODE_WHILE 5
-#define CODE_EQUAL 6
-#define CODE_REPEAT 7
-#define CODE_IF 8
-#define CODE_IF_NOT 9
-#define CODE_END -1
+#define COMANDO_FINAL 2
+#define COMANDO_ADD 3
+#define COMANDO_ZERO 4
+#define COMANDO_ENQUANTO 5
+#define COMANDO_IGUAL 6
+#define COMANDO_REPETICAO 7
+#define COMANDO_SE 8
+#define COMANDO_SENAO 9
+#define COMANDO_FIM -1
 #define YYDEBUG 1
 
+//#define CODE_FUNCTION 1
+//#define CODE_EXIT 2
+//#define CODE_OPR_ADD 3
+//#define CODE_OPR_ZERO 4
+//#define CODE_WHILE 5
+//#define CODE_EQUAL 6
+//#define CODE_IF 8
+//#define CODE_IF_NOT 9
+//#define CODE_END -1
+//#define YYDEBUG 1
+
 extern int yylex();
+int yyerror(char *s);
 extern FILE *yyin;
 extern int yyparse();
 FILE *cFile;
 
-void yyerror(const char *s){
-    fprintf(stderr, "%s\n", s);
-    exit(errno);
-}
+
 
 void openFile(){
-    cFile = fopen("cProgram.c","w+");
-
+    cFile = fopen("Saida.c","w+");
     if (cFile == NULL){
-        printf("Erro ao gerar arquivo");
+        printf("Ocorreu um erro ao abrir o arquivo");
         exit(-1);
     }
 }
 
-void cWriter(LLIST *llist){
-    printf("oi\n");
+void provolOneToC(LLIST *llist){
+    printf("Started provolOne to C\n");
     openFile();
     fprintf(cFile,"#include <stdio.h>\nint main(void) {\n");
     while(llist != NULL) {
         printf("%d",llist->line.cmd);
         switch(llist->line.cmd){
-            case CODE_OPR_ZERO: {
+            case COMANDO_ZERO: {
                 fprintf(cFile, "%s = 0;\n", llist->line.v1);
                 break;
             }
-            case CODE_EQUAL: {
-                printf("cheguei no igual muito fofo\n");
+            case COMANDO_IGUAL: {
+                fprintf(cFile, "%s = %s;\n", llist->line.v1,llist->line.v2);
                 break;
             }
-            case CODE_OPR_ADD: {
-                printf("adiciona m uito legal\n");
+            case COMANDO_ADD: {
+                fprintf(cFile,"%s++\n", llist->line.v1);
                 break;
             }
-            case CODE_FUNCTION: {
+            case COMANDO_ENTRADA: {
                 char *v1 = strtok(llist->line.v1, " ");
 
                 while (v1 != NULL){
 
                     fprintf(cFile, "int %s;\n",v1);
-                    fprintf(cFile, "printf(\"Entrada [%s]: \");\n", v1);
+                    fprintf(cFile, "printf(\"Var [%s]: \");\n", v1);
                     fprintf(cFile, "scanf(\"%s\",&%s);\n", "%d", v1);
 
                     v1 = strtok(NULL, " ");
@@ -81,12 +85,11 @@ void cWriter(LLIST *llist){
                 }
                 break;
             }
-            case CODE_EXIT: {
-                printf("sai gay\n");
+            case COMANDO_FINAL: {
+                fprintf(cFile, "}");
                 break;
             }
             default:
-                printf("af\n");
                 break;
         }
         if(llist->prox == NULL){
@@ -110,14 +113,14 @@ void yyparserDebugger(LLIST *llist){
 %token ENTRADA
 %token SAIDA
 %token FIM
-%token ENQUANTO
 %token FACA
+%token ENQUANTO
 %token ZERA
+%token INC
 %token ABRE
 %token FECHA
 %token IGUAL
 %token ENTAO
-%token INC
 %token <content> ID
 %token VEZES
 %token SE
@@ -144,7 +147,7 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     }
     llist->line.v1 = $2;
     llist->line.v2 = $4;
-    llist->line.cmd = CODE_FUNCTION;
+    llist->line.cmd = COMANDO_ENTRADA;
     addLLISTend(llist, $5);
 
     LLIST *aux = (LLIST *)malloc(sizeof(LLIST));
@@ -152,10 +155,10 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
         printf("ERROR READING PROGRAM EXIT ENTRY\n");
     }
     aux->line.v1 = $4;
-    aux->line.cmd = CODE_EXIT;
+    aux->line.cmd = COMANDO_FINAL;
     addLLISTend(aux, llist);
 
-    cWriter(llist);
+    provolOneToC(llist);
 };
 
 varlist : varlist ID {
@@ -178,7 +181,7 @@ cmd : ENQUANTO ID FACA cmds FIM {
     }
 
     llist->line.v1 = $2;
-    llist->line.cmd = CODE_WHILE;
+    llist->line.cmd = COMANDO_ENQUANTO;
     addLLISTend($4, llist);
 
     LLIST * aux = (LLIST *)malloc(sizeof(LLIST));
@@ -187,7 +190,7 @@ cmd : ENQUANTO ID FACA cmds FIM {
         exit(-1);
     }
 
-    aux->line.cmd = CODE_END;
+    aux->line.cmd = COMANDO_FIM;
     addLLISTend(aux, llist);
     $$ = llist;
 }
@@ -202,7 +205,7 @@ cmd : ENQUANTO ID FACA cmds FIM {
 
         llist->line.v1 = $1;
         llist->line.v2 = $3;
-        llist->line.cmd = CODE_EQUAL;
+        llist->line.cmd = COMANDO_IGUAL;
         $$ = llist;
     }
 
@@ -213,11 +216,15 @@ cmd : ENQUANTO ID FACA cmds FIM {
             exit(-1);
         }
         llist->line.v1 = $3;
-        llist->line.cmd = CODE_OPR_ADD;
+        llist->line.cmd = COMANDO_ADD;
         $$ = llist;
     }
 %%
-
+int yyerror(char *s)
+{
+	printf("Syntax Error on line %s\n", s);
+	return 0;
+}
 int main(int argc, char **argv){
 
     FILE *provol_code = fopen(argv[1], "r");
