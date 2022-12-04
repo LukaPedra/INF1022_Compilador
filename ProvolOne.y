@@ -10,3 +10,9 @@
     FILE *outFile;
     char* varArray[2];
 %}
+
+%union{
+    char name[20];
+    int number;
+    char* content;
+}
