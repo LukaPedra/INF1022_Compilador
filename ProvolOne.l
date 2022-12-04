@@ -1,12 +1,21 @@
 %option yywrap
+
+/*
+    Lucca Vieira Rocha      >2011342
+    João Vitor Godinho
+ */
 	#include <stdio.h>
 	#include "ProvolOne.tab.h"
 %%
-[0-9]+	{printf("lido %s", yytext);yylval=atoi(yytext); return(NUMBER); }
-\n		return(LINEEND)
-"+"		return(PLUS)
-"/"		return(DIVIDE)
-"-"		return(MINUS)
-"="		return(EQUAL)
-"end"	return(0)
-.		
+    
+    ENTRADA     return (ENTRADA);
+    SAIDA       return (SAIDA);
+    FIM         return (FIM);
+    FACA        return (FACA);
+    ENQUANTO    return (ENQUANTO);
+    ZERA        return (ZERA);
+    INC         return (INC);
+    "="         return (IGUAL);
+    "("         return (ABREPAR);
+    ")"         return (FECHAPAR);
+    [a-zA-Z]    {yylval.sval =strdup(yytext); return (ID);
