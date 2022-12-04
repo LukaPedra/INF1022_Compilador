@@ -5,7 +5,7 @@
     João Vitor Godinho
  */
 	#include <stdio.h>
-	#include "ProvolOne.tab.h"
+	#include "y.tab.h"
 %%
     
     ENTRADA     return (ENTRADA);
