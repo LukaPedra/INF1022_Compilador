@@ -83,13 +83,38 @@ cmd:
 
 };
 
+cmds:
+
+    cmds cmd{
+        //nao sei, dar um jeito de implementar recursao
+    }
+
+    | cmd{
+        $$ = $1; //nao tenho certeza, parece fazer sentido
+    };
 
 
+varlist:
 
+    id varlist{
+        //nao sei, dar um jeito de implementar recursao
+    }
 
+    | id{
+        $$ = $1; //nao tenho certeza, parece fazer sentido
+    }
 
 %%
 
+/*
+
+NAO CRIAR FUNCAO DE ERRO! 
+O YACC/BISON JA TEM UMA FUNCAO DE ERRO PROPRIA
+
+eu acho que varlist pode ser interpretada como linked list mas sei la,
+    nao tem um jeito mais facil?
+
+*/
 
 int main(int agrc, char* agrs[]){
     
