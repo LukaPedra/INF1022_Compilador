@@ -16,3 +16,12 @@
     int number;
     char* content;
 }
+
+
+int main(int agrc, char* agrs[]){
+    
+
+
+
+    return;
+}
