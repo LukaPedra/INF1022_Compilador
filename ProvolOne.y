@@ -46,24 +46,32 @@ program: ENTRADA varlist SAIDA varlist cmds FIM {
     $$ = ""; // $$ == return
 }
 
-cmd: id IGUAL id{
+cmd: 
+
+    id IGUAL id{
     
     printf("DEBUG: %s = %s;\n",$1,$3);
     fprintf(output,"%s = %s;\n",$1,$3);
 
-} | INC ABREPAR id FECHAPAR{
+    } 
+
+    | INC ABREPAR id FECHAPAR{
     
     int buf = $3;
     buf++;
     printf("DEBUG: %s++\n",buf);
     fprintf(output,"%s++\n",buf);
 
-} | ZERA ABREPAR id FECHAPAR{
+    }
+
+    | ZERA ABREPAR id FECHAPAR{
     
     printf("DEBUG: %s = 0;\n",$3);
     fprintf(output,"%s = 0;\n",$3);
 
-} | ENQUANTO id FACA cmds FIM{
+    }
+
+    | ENQUANTO id FACA cmds FIM{
     printf("ESCREVER DEBUG DO WHILE\n");
 
     char* condicao = $2;
@@ -74,6 +82,9 @@ cmd: id IGUAL id{
     fprintf(output,"}");
 
 };
+
+
+
 
 
 
