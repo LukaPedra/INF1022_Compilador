@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include "mylib.h"
 
     int yylex();
     int yyerror(char *s);
@@ -40,11 +41,26 @@
 program: ENTRADA varlist SAIDA varlist cmds FIM {
 //         $1       $2     $3     $4    $5   %6
 
-    char* entrada = $2 //
-
+    LinkedList *comandos = create_ll();// talvez mudar de nome
     
+    /*nao colocar para checar se é nulo*/
+
+    char *vl1 = $2; //varlist 1
+    char *vl2 = $4; //varlist 2
+    int cmd = %5; //comando
+
+    comandos->var1 = vl1;
+    comandos->var2 = vl2;
+    comandos->comando = cmd;
+    
+    insert_end_ll(comandos,$5);
+
+    /*aux ??*/
+
+    go_provol(comandos); //executa os comandos
+
     $$ = ""; // $$ == return
-}
+};
 
 cmd: 
 

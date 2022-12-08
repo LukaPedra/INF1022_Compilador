@@ -18,10 +18,7 @@ LinkedList* create_ll(void){
     
     LinkedList* node = (LinkedList*) malloc(sizeof(LinkedList));
 
-    /*
-    malocar as palavras de node
-    nao sei quanto que cabe de cada palavra, e nem se precisa mallocar
-    */
+    //nao preciso mallocar as variaveis
 
     return node;
 }

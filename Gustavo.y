@@ -21,9 +21,9 @@
 
 extern int yylex();
 int yyerror(char *s);
-extern FILE *yyin;
+extern FILE *yyin; //input do bison
 extern int yyparse();
-FILE *cFile;
+FILE *cFile; //output file em provol-one
 void openFile(){
     cFile = fopen("Saida.c","w+");
     if (cFile == NULL){
@@ -133,7 +133,7 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     llist->line.cmd = COMANDO_ENTRADA;
     addLLISTend(llist, $5);
 
-    LLIST *aux = (LLIST *)malloc(sizeof(LLIST));
+    LLIST *aux = (LLIST *)malloc(sizeof(LLIST)); //nao entendi
     if (aux == NULL){
         printf("ERROR READING PROGRAM EXIT ENTRY\n");
     }
