@@ -39,19 +39,19 @@ void provolOneToC(LLIST *llist){
     while(llist != NULL) {
         printf("%d",llist->line.cmd);
         switch(llist->line.cmd){
-            case COMANDO_ZERO: {
+            case COMANDO_ZERO: { //ZERA
                 fprintf(cFile, "%s = 0;\n", llist->line.v1);
                 break;
             }
-            case COMANDO_IGUAL: {
+            case COMANDO_IGUAL: {// ATRIBUICAO 
                 fprintf(cFile, "%s = %s;\n", llist->line.v1,llist->line.v2);
                 break;
             }
-            case COMANDO_ADD: {
+            case COMANDO_ADD: { //INC
                 fprintf(cFile,"%s++\n", llist->line.v1);
                 break;
             }
-            case COMANDO_ENTRADA: {
+            case COMANDO_ENTRADA: { //provavelmente alguma forma de provar que o codigo funciona
                 char *v1 = strtok(llist->line.v1, " ");
 
                 while (v1 != NULL){

@@ -1,4 +1,7 @@
-ENTRADA X, Y
-SAIDA Y
+ENTRADA X Y
+SAIDA Z
 Z=Y
 FIM
+
+yaac -d ProvolOne.y
+flex ProvolOne.l

@@ -9,8 +9,18 @@
     extern FILE *yyin;
     extern int yyparse();
     FILE *output;
-    char* varArray[2];
+
+
+    void go_provol(){
+        fprintf(output,"#include <stdio.h>\nint main(void){\n");
+        
+
+
+    }
+
 %}
+
+
 
 %union{
     char name[20];
@@ -41,24 +51,27 @@
 program: ENTRADA varlist SAIDA varlist cmds FIM {
 //         $1       $2     $3     $4    $5   %6
 
-    LinkedList *comandos = create_ll();// talvez mudar de nome
-    
-    /*nao colocar para checar se é nulo*/
-
     char *vl1 = $2; //varlist 1
+    /*X, Y, Z*/
+
     char *vl2 = $4; //varlist 2
     int cmd = %5; //comando
 
-    comandos->var1 = vl1;
-    comandos->var2 = vl2;
-    comandos->comando = cmd;
+    vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
+    /*vl1 = X,Y,Z*/
+
+    while(vl1 != NULL){ //imprime todas as atribuicoes sendo veitas
+        fprintf(output,"int %s;",vl1);
+        //colocar pra printar innt %s vl1
+
+        vl1 = strok(NULL, " ");
+    }
+
     
-    insert_end_ll(comandos,$5);
 
-    /*aux ??*/
 
-    go_provol(comandos); //executa os comandos
-
+    /*LEMBRAR DE USAR O VL2 AQUI :)*/
+    /*VL2 NECESSARIAMENTE É UMA VARIAVEL DE VL1 NECESSARIAMENTE*/
     $$ = ""; // $$ == return
 };
 
@@ -102,22 +115,22 @@ cmd:
 cmds:
 
     cmds cmd{
-        //nao sei, dar um jeito de implementar recursao
+        //nao preciso implementar recursao, o bison faz isso pra mim
     }
 
     | cmd{
-        $$ = $1; //nao tenho certeza, parece fazer sentido
+        $$ = $1; //retorna id
     };
 
 
 varlist:
 
     id varlist{
-        //nao sei, dar um jeito de implementar recursao
+        //nao preciso implementar recursao, o bison faz isso pra mim
     }
 
     | id{
-        $$ = $1; //nao tenho certeza, parece fazer sentido
+        $$ = $1; //retorna id
     }
 
 %%
@@ -134,18 +147,20 @@ eu acho que varlist pode ser interpretada como linked list mas sei la,
 
 int main(int agrc, char* agrs[]){
     
-    if(argc != 3){ /* ./compilador entrada.txt saida.txt */
+    if(argc != 5){ /* ./compilador entrada.txt saida.txt */
         printf("ERRO: QUANTIDADE DE PARAMETROS INVALIDA, FAVOR INSERIR COMO NO EXEMPLO ABAIXO:\n");
-        printf("=>   ./<nome_do_executavel> entrada.txt saida.txt\n");
+        printf("=>   ./<nome_do_executavel> entrada.txt saida.txt var1 var2\n");
         return 0;
     }
 
     /*
     argv[1] --> entrada.txt
     argv[2] --> saida.txt
+    argv[3] --> nome da variavel 1
+    argv[4] --> nome da variavel 2
     */
-    printf("BEM VINDO AO COMPILADOR PROVOL-ONE!\n");
 
+    printf("BEM VINDO AO COMPILADOR PROVOL-ONE!\n");
     printf("Realizando abertura do arquivo de entrada...");
     
     FILE *input = fopen(argv[1],"r"); //to pensando em trocar pra w+ mas sei la acho que nao precisa
@@ -165,14 +180,13 @@ int main(int agrc, char* agrs[]){
 
 
 
-     
-    
+
+
     yyin = input
+    printf("")
     yyparse();
 
 
-
-        descomentar*/
     printf("hello world!\n");
 
     fclose(input);
