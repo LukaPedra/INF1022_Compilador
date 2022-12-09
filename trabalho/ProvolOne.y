@@ -34,17 +34,17 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     char *vl1 = $2;
     char *vl2 = $4;
 
-    vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
-    /*vl1 = X,Y,Z*/
+    vl1 = strtok(vl1," ");
+
 
     fprintf(output,"#include <stdio.h>\n"
                    "int main(void){\n");
 
 
 
-    while(vl1 != NULL){ //imprime todas as atribuicoes sendo feitas
+    while(vl1 != NULL){ 
         fprintf(output,"int %s;\n",vl1);
-        //colocar pra printar innt %s vl1
+ 
 
         vl1 = strtok(NULL, " ");
     }
@@ -54,9 +54,6 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
 
     fprintf(output,"return %s;\n}",vl2);
 
-    /*o bison mexe na recursao de cmds pra mim*/
-    /*LEMBRAR DE USAR O VL2 AQUI :)*/
-    /*VL2 NECESSARIAMENTE É UMA VARIAVEL DE VL1 NECESSARIAMENTE*/
 };
 
 cmd: 
@@ -136,7 +133,6 @@ cmds:
 varlist:
 
     varlist ID{
-        //nao preciso implementar recursao, o bison faz isso pra mim
         char *buf = $1;
         size_t id_len = strlen($2);
         size_t varlist_len = strlen(buf);
@@ -162,7 +158,7 @@ int yyerror(char *s)
 
 int main(int argc, char* argv[]){
     
-    if(argc != 5){ /* ./compilador entrada.txt saida.txt */
+    if(argc != 5){
         printf("ERRO: QUANTIDADE DE PARAMETROS INVALIDA, FAVOR INSERIR COMO NO EXEMPLO ABAIXO:\n");
         printf("=>   ./<nome_do_executavel> entrada.txt saida.txt var1 var2\n");
         return 0;
@@ -171,8 +167,8 @@ int main(int argc, char* argv[]){
     /*
     argv[1] --> entrada.txt
     argv[2] --> saida.txt
-    argv[3] --> nome da variavel 1
-    argv[4] --> nome da variavel 2
+    argv[3] --> valor 1
+    argv[4] --> valor 2
     */
 
 
