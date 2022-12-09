@@ -1,7 +1,6 @@
-
 %option yywrap
     #include <stdio.h>
-    #include "y.tab.h"
+    #include "ProvolOne.tab.h"
 %%
     
 ENTRADA     { return ENTRADA;}
@@ -11,7 +10,7 @@ FACA        { return FACA;}
 ENQUANTO    { return ENQUANTO;}
 ZERA        { return ZERA;}
 INC         { return INC;}
-"="         { return IGUAL;}
-"("         { return ABREPAR;}
-")"         { return FECHAPAR;}
-[a-zA-Z]    {yylval.content =strdup(yytext); return (ID);}
+=           { return IGUAL;}
+\(          { return ABREPAR;}
+\)          { return FECHAPAR;}
+[a-zA-Z]    {yylval =strdup(yytext); return (ID);}

@@ -1,3 +1,4 @@
-testando
-ABREPARa
-aaa
+ENTRADA X Y
+SAIDA Z
+Z=Y
+FIM

@@ -15,12 +15,6 @@
 
 
 
-%union{
-    char name[20];
-    int number;
-    char* content;
-}
-
 %token ENTRADA
 %token SAIDA
 %token FIM
@@ -32,35 +26,31 @@
 %token ABREPAR
 %token FECHAPAR
 
-%token <name> ID
-%type <number> program
+%token <char *> ID
 
-%type <content> varlist
-%type <content> cmds
-%type <number> cmd
+%type <char *> varlist
+%type <char *> cmd
+%type <char *> cmds
 
 
 %%
 program : ENTRADA varlist SAIDA varlist cmds FIM {
-//         $1       $2     $3     $4    $5   %6
 
-    char *vl1 = $2; //varlist 1
-    /*X, Y, Z*/
-
-    char *vl2 = $4; //varlist 2
-    int cmd = $5; //comando
+    char *vl1 = $2;
+    char *vl2 = $4;
 
     vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
     /*vl1 = X,Y,Z*/
 
-    while(vl1 != NULL){ //imprime todas as atribuicoes sendo veitas
-        fprintf(output,"int %s;",vl1);
+    while(vl1 != NULL){ //imprime todas as atribuicoes sendo feitas
+        fprintf(output,"int %s;\n",vl1);
         //colocar pra printar innt %s vl1
 
-        vl1 = strok(NULL, " ");
+        vl1 = strtok(NULL, " ");
     }
-
-
+    
+    fprintf(output,"%s",$5);
+    free($5);
 
     /*o bison mexe na recursao de cmds pra mim*/
     /*LEMBRAR DE USAR O VL2 AQUI :)*/
@@ -71,73 +61,99 @@ cmd:
 
     ID IGUAL ID{
     
+    char buf[500];
+
+    sprintf(buf,"%s = %s;\n",$1,$3);
     printf("DEBUG: %s = %s;\n",$1,$3);
-    fprintf(output,"%s = %s;\n",$1,$3);
+
+    $$ = strdup(buf);
 
     } 
 
     | INC ABREPAR ID FECHAPAR{
+    char buf[500];
     
-    int buf = $3;
-    buf++;
-    printf("DEBUG: %s++\n",buf);
-    fprintf(output,"%s++\n",buf);
+
+    printf("DEBUG: %s++;\n",$3);
+    sprintf(buf,"%s++;\n",$3)
+
+    $$ = strdup(buf);
 
     }
 
     | ZERA ABREPAR ID FECHAPAR{
     
+    char buf[500];
+
     printf("DEBUG: %s = 0;\n",$3);
-    fprintf(output,"%s = 0;\n",$3);
+    sprintf(buf,"%s = 0;\n",$3);
+
+    $$ = strdup(buf);
 
     }
 
     | ENQUANTO ID FACA cmds FIM{
-    printf("ESCREVER DEBUG DO WHILE\n");
+
+
+    size_t cmds_len = strlen($4);
+    size_t cond_len = strlen($2);
+    size_t while_len = 15 + cmds_len + cond_len;
 
     char* condicao = $2;
     char* o_queFazer = $4;
 
-    fprintf(output,"while(%s){\n",condicao);
-    fprintf(output,"    %s\n",o_queFazer);
-    fprintf(output,"}");
+    char *buf = (char*) malloc(sizeof(char)*while_len);
+
+    sprintf(buf,"while(%s){\n%s\n}\n",$2,$4);
+
+    free($2);
+    free($4);
 
 };
 
 cmds:
 
     cmds cmd{
-        //nao preciso implementar recursao, o bison faz isso pra mim
-    }
+        char *buf = $1;
+        size_t cmd_len = strlen($2);
+        size_t cmds_len = strlen(buf);
+        size_t new_len = cmd_len + cmds_len + 1;
+        buf = realloc(buf,new_len);
+    
+        $$ = strcat(buf,$2);
+        free($2);
 
-    | cmd{
-        $$ = $1; //retorna ID
+    } | cmd{
+
+        $$ = $1;
+
     };
-
 
 varlist:
 
     varlist ID{
         //nao preciso implementar recursao, o bison faz isso pra mim
-        char buf[25];
-        $$ = buf;
+        char *buf = $1;
+        size_t id_len = strlen($2);
+        size_t varlist_len = strlen(buf);
+        size_t new_len = id_len + varlist_len + 1;
+        char *buf2 = realloc(buf,new_len);
+    
+        $$ = strcat(buf2,$2);
+        free($2);
     }
 
     | ID{
         $$ = $1; //retorna ID
-    }
+    };
 
 %%
 
-/*
-
-NAO CRIAR FUNCAO DE ERRO! 
-O YACC/BISON JA TEM UMA FUNCAO DE ERRO PROPRIA
-
-eu acho que varlist pode ser interpretada como linked list mas sei la,
-    nao tem um jeito mais facil?
-
-*/
+int yyerror(char *s)
+{
+	printf("%s\n", s);
+	return 0;
+}
 
 int main(int argc, char* argv[]){
     
@@ -154,10 +170,11 @@ int main(int argc, char* argv[]){
     argv[4] --> nome da variavel 2
     */
 
+
     printf("BEM VINDO AO COMPILADOR PROVOL-ONE!\n");
     printf("Realizando abertura do arquivo de entrada...");
     
-    FILE *input = fopen(argv[1],"r"); //to pensando em trocar pra w+ mas sei la acho que nao precisa
+    FILE *input = fopen(argv[1],"r");
     output = fopen(argv[2],"w");
 
     if(input == NULL){
