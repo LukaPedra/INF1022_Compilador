@@ -3,7 +3,17 @@
     #include <stdlib.h>
     #include <string.h>
     #include "mylib.h"
-
+    #define COMANDO_ENTRADA 1
+    #define COMANDO_FINAL 2
+    #define COMANDO_ADD 3
+    #define COMANDO_ZERO 4
+    #define COMANDO_ENQUANTO 5
+    #define COMANDO_IGUAL 6
+    #define COMANDO_REPETICAO 7
+    #define COMANDO_SE 8
+    #define COMANDO_SENAO 9
+    #define COMANDO_FIM -1
+    #define YYDEBUG 1
     int yylex();
     int yyerror(char *s);
     extern FILE *yyin;
@@ -11,6 +21,57 @@
     FILE *output;
     char* varArray[2];
 %}
+
+void go_provol(LinkedList *commandos){
+    printf("Started provolOne to C\n");
+    openFile();
+    fprintf(cFile,"#include <stdio.h>\nint main(void) {\n");
+    while(commandos != NULL) {
+        printf("%d",commandos->comando);
+        switch(commandos->comando){
+            case COMANDO_ZERO: {
+                fprintf(cFile, "%s = 0;\n", commandos->var1);
+                break;
+            }
+            case COMANDO_IGUAL: {
+                fprintf(cFile, "%s = %s;\n", commandos->var1,commandos->var2);
+                break;
+            }
+            case COMANDO_ADD: {
+                fprintf(cFile,"%s++\n", commandos->var1);
+                break;
+            }
+            case COMANDO_ENTRADA: {
+                char *v1 = strtok(commandos->var1, " ");
+
+                while (v1 != NULL){
+
+                    fprintf(cFile, "int %s;\n",v1);
+                    fprintf(cFile, "printf(\"Var [%s]: \");\n", v1);
+                    fprintf(cFile, "scanf(\"%s\",&%s);\n", "%d", v1);
+
+                    v1 = strtok(NULL, " ");
+                }
+
+                char *v2 = strtok(commandos->var2, " ");
+
+                while (v2 != NULL){
+                    fprintf(cFile, "int %s = 0;\n", v2);
+                    v2 = strtok(NULL, " ");
+                }
+                break;
+            }
+            case COMANDO_FINAL: {
+                fprintf(cFile, "}");
+                break;
+            }
+            default:
+                break;
+        }
+        commandos = commandos->prox;
+    }
+    fclose(cFile);
+}
 
 %union{
     char name[20];
@@ -41,85 +102,85 @@
 program: ENTRADA varlist SAIDA varlist cmds FIM {
 //         $1       $2     $3     $4    $5   %6
 
-    LinkedList *comandos = create_ll();// talvez mudar de nome
-    
-    /*nao colocar para checar se é nulo*/
+    LinkedList *commandos = (LinkedList *)malloc(sizeof(LinkedList));
+    if (commandos == NULL){
+        printf("ERROR READING PROGRAM FUNCTION ENTRY\n");
+        exit(-1);
+    }
+    commandos->var1 = $2;
+    commandos->var2 = $4;
+    commandos->comando = COMANDO_ENTRADA;
+    addicionaFimLL(commandos, $5);
 
-    char *vl1 = $2; //varlist 1
-    char *vl2 = $4; //varlist 2
-    int cmd = %5; //comando
+    LinkedList *aux = (LinkedList *)malloc(sizeof(LinkedList)); //nao entendi
+    if (aux == NULL){
+        printf("ERROR READING PROGRAM EXIT ENTRY\n");
+    }
+    aux->var1 = $4;
+    aux->comando = COMANDO_FINAL;
+    addicionaFimLL(aux, commandos);
 
-    comandos->var1 = vl1;
-    comandos->var2 = vl2;
-    comandos->comando = cmd;
-    
-    insert_end_ll(comandos,$5);
-
-    /*aux ??*/
-
-    go_provol(comandos); //executa os comandos
-
-    $$ = ""; // $$ == return
+    provolOneToC(commandos);
 };
 
-cmd: 
-
-    id IGUAL id{
-    
-    printf("DEBUG: %s = %s;\n",$1,$3);
-    fprintf(output,"%s = %s;\n",$1,$3);
-
-    } 
-
-    | INC ABREPAR id FECHAPAR{
-    
-    int buf = $3;
-    buf++;
-    printf("DEBUG: %s++\n",buf);
-    fprintf(output,"%s++\n",buf);
-
+varlist : varlist id {
+    char buffer[50];
+    snprintf(buffer, 50, "%s %s", $1, $2);
+    $$ = buffer;
     }
 
-    | ZERA ABREPAR id FECHAPAR{
-    
-    printf("DEBUG: %s = 0;\n",$3);
-    fprintf(output,"%s = 0;\n",$3);
+    | id    {$$ = $1;};
 
+cmds : cmds cmd     { addicionaFimLL($2, $1); $$ = $1; }
+
+    | cmd { $$ = $1;};
+
+cmd : ENQUANTO id FACA cmds FIM {
+    LinkedList *commandos = (LinkedList *)malloc(sizeof(LinkedList));
+    if (commandos == NULL){
+        printf("ERROR READGING COMMAND ENTRY");
+        exit(-1);
     }
 
-    | ENQUANTO id FACA cmds FIM{
-    printf("ESCREVER DEBUG DO WHILE\n");
+    commandos->var1 = $2;
+    commandos->comando = COMANDO_ENQUANTO;
+    addicionaFimLL($4, commandos);
 
-    char* condicao = $2;
-    char* o_queFazer = $4;
-
-    fprintf(output,"while(%s){\n",condicao);
-    fprintf(output,"    %s\n",o_queFazer);
-    fprintf(output,"}");
-
-};
-
-cmds:
-
-    cmds cmd{
-        //nao sei, dar um jeito de implementar recursao
+    LinkedList * aux = (LinkedList *)malloc(sizeof(LinkedList));
+    if (aux == NULL){
+        printf("ERROR READING END ENTRY");
+        exit(-1);
     }
 
-    | cmd{
-        $$ = $1; //nao tenho certeza, parece fazer sentido
-    };
+    aux->comando = COMANDO_FIM;
+    addicionaFimLL(aux, commandos);
+    $$ = commandos;
+}
 
+    | id IGUAL id {
+        LinkedList *commandos = (LinkedList *)malloc(sizeof(LinkedList));
 
-varlist:
+        if (commandos == NULL){
+            printf("ERROR READING ATTRIBUTION\n");
+            exit(-1);
+        }
 
-    id varlist{
-        //nao sei, dar um jeito de implementar recursao
+        commandos->var1 = $1;
+        commandos->var2 = $3;
+        commandos->comando = COMANDO_IGUAL;
+        $$ = commandos;
     }
 
-    | id{
-        $$ = $1; //nao tenho certeza, parece fazer sentido
+    | INC ABREPAR id FECHAPAR {
+        LinkedList *commandos = (LinkedList*)malloc(sizeof(LinkedList));
+        if (commandos == NULL){
+            printf("ERROR READING INCREMENT");
+            exit(-1);
+        }
+        commandos->var1 = $3;
+        commandos->comando = COMANDO_ADD;
+        $$ = commandos;
     }
-
 %%
 
 /*
