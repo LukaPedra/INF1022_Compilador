@@ -39,23 +39,23 @@
 %token ABREPAR
 %token FECHAPAR
 
-%token <name> id
+%token <name> ID
 %type <number> program
 
 %type <content> varlist
 %type <content> cmds
-%type <content> cmd
+%type <number> cmd
 
 
 %%
-program: ENTRADA varlist SAIDA varlist cmds FIM {
+program : ENTRADA varlist SAIDA varlist cmds FIM {
 //         $1       $2     $3     $4    $5   %6
 
     char *vl1 = $2; //varlist 1
     /*X, Y, Z*/
 
     char *vl2 = $4; //varlist 2
-    int cmd = %5; //comando
+    int cmd = $5; //comando
 
     vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
     /*vl1 = X,Y,Z*/
@@ -67,24 +67,23 @@ program: ENTRADA varlist SAIDA varlist cmds FIM {
         vl1 = strok(NULL, " ");
     }
 
-    
 
 
+    /*o bison mexe na recursao de cmds pra mim*/
     /*LEMBRAR DE USAR O VL2 AQUI :)*/
     /*VL2 NECESSARIAMENTE É UMA VARIAVEL DE VL1 NECESSARIAMENTE*/
-    $$ = ""; // $$ == return
 };
 
 cmd: 
 
-    id IGUAL id{
+    ID IGUAL ID{
     
     printf("DEBUG: %s = %s;\n",$1,$3);
     fprintf(output,"%s = %s;\n",$1,$3);
 
     } 
 
-    | INC ABREPAR id FECHAPAR{
+    | INC ABREPAR ID FECHAPAR{
     
     int buf = $3;
     buf++;
@@ -93,14 +92,14 @@ cmd:
 
     }
 
-    | ZERA ABREPAR id FECHAPAR{
+    | ZERA ABREPAR ID FECHAPAR{
     
     printf("DEBUG: %s = 0;\n",$3);
     fprintf(output,"%s = 0;\n",$3);
 
     }
 
-    | ENQUANTO id FACA cmds FIM{
+    | ENQUANTO ID FACA cmds FIM{
     printf("ESCREVER DEBUG DO WHILE\n");
 
     char* condicao = $2;
@@ -119,18 +118,20 @@ cmds:
     }
 
     | cmd{
-        $$ = $1; //retorna id
+        $$ = $1; //retorna ID
     };
 
 
 varlist:
 
-    id varlist{
+    varlist ID{
         //nao preciso implementar recursao, o bison faz isso pra mim
+        char buf[25];
+        $$ = buf;
     }
 
-    | id{
-        $$ = $1; //retorna id
+    | ID{
+        $$ = $1; //retorna ID
     }
 
 %%
@@ -145,7 +146,7 @@ eu acho que varlist pode ser interpretada como linked list mas sei la,
 
 */
 
-int main(int agrc, char* agrs[]){
+int main(int argc, char* argv[]){
     
     if(argc != 5){ /* ./compilador entrada.txt saida.txt */
         printf("ERRO: QUANTIDADE DE PARAMETROS INVALIDA, FAVOR INSERIR COMO NO EXEMPLO ABAIXO:\n");
@@ -180,10 +181,7 @@ int main(int agrc, char* agrs[]){
 
 
 
-
-
-    yyin = input
-    printf("")
+    yyin = input;
     yyparse();
 
 
@@ -193,5 +191,5 @@ int main(int agrc, char* agrs[]){
     fclose(output);
 
 
-    return;
+    return 0;
 }

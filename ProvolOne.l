@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include "our_provo.tab.h"
 
-%option yywrap /* fala que vai ler de um arquivo*/
-
-/*
-    Lucca Vieira Rocha                  >2011342
-    João Victor Godinho Woitschach      >2011401
- */
+%option yywrap
+    #include <stdio.h>
+    #include "y.tab.h"
 %%
     
 ENTRADA     { return ENTRADA;}
