@@ -72,7 +72,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include "mylib.h"
+
 
     int yylex();
     int yyerror(char *s);
@@ -515,8 +515,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    64,    75,    86,    97,   118,   128,   136,
-     149
+       0,    32,    32,    61,    72,    83,    94,   117,   127,   135,
+     147
 };
 #endif
 
@@ -1094,17 +1094,17 @@ yyreduce:
     char *vl1 = yyvsp[-4];
     char *vl2 = yyvsp[-2];
 
-    vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
-    /*vl1 = X,Y,Z*/
+    vl1 = strtok(vl1," ");
+
 
     fprintf(output,"#include <stdio.h>\n"
                    "int main(void){\n");
 
 
 
-    while(vl1 != NULL){ //imprime todas as atribuicoes sendo feitas
+    while(vl1 != NULL){ 
         fprintf(output,"int %s;\n",vl1);
-        //colocar pra printar innt %s vl1
+ 
 
         vl1 = strtok(NULL, " ");
     }
@@ -1112,17 +1112,14 @@ yyreduce:
     fprintf(output,"%s",yyvsp[-1]);
     free(yyvsp[-1]);
 
-    fprintf(output,"return 0;\n}");
+    fprintf(output,"return %s;\n}",vl2);
 
-    /*o bison mexe na recursao de cmds pra mim*/
-    /*LEMBRAR DE USAR O VL2 AQUI :)*/
-    /*VL2 NECESSARIAMENTE É UMA VARIAVEL DE VL1 NECESSARIAMENTE*/
 }
-#line 1122 "ProvolOne.tab.c"
+#line 1119 "ProvolOne.tab.c"
     break;
 
   case 3: /* cmd: ID IGUAL ID  */
-#line 64 "ProvolOne.y"
+#line 61 "ProvolOne.y"
                {
     
     char buf[500];
@@ -1133,11 +1130,11 @@ yyreduce:
     yyval = strdup(buf);
 
     }
-#line 1137 "ProvolOne.tab.c"
+#line 1134 "ProvolOne.tab.c"
     break;
 
   case 4: /* cmd: INC ABREPAR ID FECHAPAR  */
-#line 75 "ProvolOne.y"
+#line 72 "ProvolOne.y"
                              {
     char buf[500];
     
@@ -1148,11 +1145,11 @@ yyreduce:
     yyval = strdup(buf);
 
     }
-#line 1152 "ProvolOne.tab.c"
+#line 1149 "ProvolOne.tab.c"
     break;
 
   case 5: /* cmd: ZERA ABREPAR ID FECHAPAR  */
-#line 86 "ProvolOne.y"
+#line 83 "ProvolOne.y"
                               {
     
     char buf[500];
@@ -1163,11 +1160,11 @@ yyreduce:
     yyval = strdup(buf);
 
     }
-#line 1167 "ProvolOne.tab.c"
+#line 1164 "ProvolOne.tab.c"
     break;
 
   case 6: /* cmd: ENQUANTO ID FACA cmds FIM  */
-#line 97 "ProvolOne.y"
+#line 94 "ProvolOne.y"
                                {
 
 
@@ -1185,12 +1182,14 @@ yyreduce:
     free(yyvsp[-3]);
     free(yyvsp[-1]);
 
+    yyval = buf;
+
 }
-#line 1190 "ProvolOne.tab.c"
+#line 1189 "ProvolOne.tab.c"
     break;
 
   case 7: /* cmds: cmds cmd  */
-#line 118 "ProvolOne.y"
+#line 117 "ProvolOne.y"
             {
         char *buf = yyvsp[-1];
         size_t cmd_len = strlen(yyvsp[0]);
@@ -1202,23 +1201,22 @@ yyreduce:
         free(yyvsp[0]);
 
     }
-#line 1206 "ProvolOne.tab.c"
+#line 1205 "ProvolOne.tab.c"
     break;
 
   case 8: /* cmds: cmd  */
-#line 128 "ProvolOne.y"
+#line 127 "ProvolOne.y"
            {
 
         yyval = yyvsp[0];
 
     }
-#line 1216 "ProvolOne.tab.c"
+#line 1215 "ProvolOne.tab.c"
     break;
 
   case 9: /* varlist: varlist ID  */
-#line 136 "ProvolOne.y"
+#line 135 "ProvolOne.y"
               {
-        //nao preciso implementar recursao, o bison faz isso pra mim
         char *buf = yyvsp[-1];
         size_t id_len = strlen(yyvsp[0]);
         size_t varlist_len = strlen(buf);
@@ -1229,19 +1227,19 @@ yyreduce:
         yyval = strcat(buf2,yyvsp[0]);
         free(yyvsp[0]);
     }
-#line 1233 "ProvolOne.tab.c"
+#line 1231 "ProvolOne.tab.c"
     break;
 
   case 10: /* varlist: ID  */
-#line 149 "ProvolOne.y"
+#line 147 "ProvolOne.y"
         {
         yyval = yyvsp[0]; //retorna ID
     }
-#line 1241 "ProvolOne.tab.c"
+#line 1239 "ProvolOne.tab.c"
     break;
 
 
-#line 1245 "ProvolOne.tab.c"
+#line 1243 "ProvolOne.tab.c"
 
       default: break;
     }
@@ -1434,7 +1432,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 153 "ProvolOne.y"
+#line 151 "ProvolOne.y"
 
 
 int yyerror(char *s)
@@ -1445,7 +1443,7 @@ int yyerror(char *s)
 
 int main(int argc, char* argv[]){
     
-    if(argc != 5){ /* ./compilador entrada.txt saida.txt */
+    if(argc != 5){
         printf("ERRO: QUANTIDADE DE PARAMETROS INVALIDA, FAVOR INSERIR COMO NO EXEMPLO ABAIXO:\n");
         printf("=>   ./<nome_do_executavel> entrada.txt saida.txt var1 var2\n");
         return 0;
@@ -1454,8 +1452,8 @@ int main(int argc, char* argv[]){
     /*
     argv[1] --> entrada.txt
     argv[2] --> saida.txt
-    argv[3] --> nome da variavel 1
-    argv[4] --> nome da variavel 2
+    argv[3] --> valor 1
+    argv[4] --> valor 2
     */
 
 
