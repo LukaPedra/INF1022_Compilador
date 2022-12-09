@@ -2,6 +2,9 @@
 int main(void){
 int X;
 int Y;
-Z = Y;
-return 0;
+while(X){
+Z++;
+
+}
+return X;
 }

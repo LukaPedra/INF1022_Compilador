@@ -2,7 +2,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include "mylib.h"
+
 
     int yylex();
     int yyerror(char *s);
@@ -52,7 +52,7 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     fprintf(output,"%s",$5);
     free($5);
 
-    fprintf(output,"return 0;\n}");
+    fprintf(output,"return %s;\n}",vl2);
 
     /*o bison mexe na recursao de cmds pra mim*/
     /*LEMBRAR DE USAR O VL2 AQUI :)*/
@@ -110,6 +110,8 @@ cmd:
 
     free($2);
     free($4);
+
+    $$ = buf;
 
 };
 
