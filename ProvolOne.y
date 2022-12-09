@@ -13,7 +13,7 @@
 
 %}
 
-
+%define api.value.type {char *}
 
 %token ENTRADA
 %token SAIDA
@@ -26,12 +26,7 @@
 %token ABREPAR
 %token FECHAPAR
 
-%token <char *> ID
-
-%type <char *> varlist
-%type <char *> cmd
-%type <char *> cmds
-
+%token ID
 
 %%
 program : ENTRADA varlist SAIDA varlist cmds FIM {
@@ -42,6 +37,11 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
     /*vl1 = X,Y,Z*/
 
+    fprintf(output,"#include <stdio.h>\n"
+                   "int main(void){\n");
+
+
+
     while(vl1 != NULL){ //imprime todas as atribuicoes sendo feitas
         fprintf(output,"int %s;\n",vl1);
         //colocar pra printar innt %s vl1
@@ -51,6 +51,8 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     
     fprintf(output,"%s",$5);
     free($5);
+
+    fprintf(output,"return 0;\n}");
 
     /*o bison mexe na recursao de cmds pra mim*/
     /*LEMBRAR DE USAR O VL2 AQUI :)*/
@@ -75,7 +77,7 @@ cmd:
     
 
     printf("DEBUG: %s++;\n",$3);
-    sprintf(buf,"%s++;\n",$3)
+    sprintf(buf,"%s++;\n",$3);
 
     $$ = strdup(buf);
 
@@ -136,8 +138,9 @@ varlist:
         char *buf = $1;
         size_t id_len = strlen($2);
         size_t varlist_len = strlen(buf);
-        size_t new_len = id_len + varlist_len + 1;
+        size_t new_len = id_len + varlist_len + 2;
         char *buf2 = realloc(buf,new_len);
+        strcat(buf2," ");
     
         $$ = strcat(buf2,$2);
         free($2);

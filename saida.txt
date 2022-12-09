@@ -1,1 +1,7 @@
- ëª¡ûU = Àëª¡ûU;
+#include <stdio.h>
+int main(void){
+int X;
+int Y;
+Z = Y;
+return 0;
+}

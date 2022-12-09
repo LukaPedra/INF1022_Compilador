@@ -515,8 +515,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    37,    37,    62,    73,    84,    95,   116,   126,   134,
-     146
+       0,    32,    32,    64,    75,    86,    97,   118,   128,   136,
+     149
 };
 #endif
 
@@ -1088,14 +1088,19 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: ENTRADA varlist SAIDA varlist cmds FIM  */
-#line 37 "ProvolOne.y"
+#line 32 "ProvolOne.y"
                                                  {
 
-    char *vl1 = (yyvsp[-4].char *);
-    char *vl2 = (yyvsp[-2].char *);
+    char *vl1 = yyvsp[-4];
+    char *vl2 = yyvsp[-2];
 
     vl1 = strtok(vl1," "); //tira os espacos da entrada e deixa so as virgulas
     /*vl1 = X,Y,Z*/
+
+    fprintf(output,"#include <stdio.h>\n"
+                   "int main(void){\n");
+
+
 
     while(vl1 != NULL){ //imprime todas as atribuicoes sendo feitas
         fprintf(output,"int %s;\n",vl1);
@@ -1104,136 +1109,139 @@ yyreduce:
         vl1 = strtok(NULL, " ");
     }
     
-    fprintf(output,"%s",(yyvsp[-1].char *));
-    free((yyvsp[-1].char *));
+    fprintf(output,"%s",yyvsp[-1]);
+    free(yyvsp[-1]);
+
+    fprintf(output,"return 0;\n}");
 
     /*o bison mexe na recursao de cmds pra mim*/
     /*LEMBRAR DE USAR O VL2 AQUI :)*/
     /*VL2 NECESSARIAMENTE É UMA VARIAVEL DE VL1 NECESSARIAMENTE*/
 }
-#line 1115 "ProvolOne.tab.c"
+#line 1122 "ProvolOne.tab.c"
     break;
 
   case 3: /* cmd: ID IGUAL ID  */
-#line 62 "ProvolOne.y"
+#line 64 "ProvolOne.y"
                {
     
     char buf[500];
 
-    sprintf(buf,"%s = %s;\n",(yyvsp[-2].char *),(yyvsp[0].char *));
-    printf("DEBUG: %s = %s;\n",(yyvsp[-2].char *),(yyvsp[0].char *));
+    sprintf(buf,"%s = %s;\n",yyvsp[-2],yyvsp[0]);
+    printf("DEBUG: %s = %s;\n",yyvsp[-2],yyvsp[0]);
 
-    (yyval.char *) = strdup(buf);
+    yyval = strdup(buf);
 
     }
-#line 1130 "ProvolOne.tab.c"
+#line 1137 "ProvolOne.tab.c"
     break;
 
   case 4: /* cmd: INC ABREPAR ID FECHAPAR  */
-#line 73 "ProvolOne.y"
+#line 75 "ProvolOne.y"
                              {
     char buf[500];
     
 
-    printf("DEBUG: %s++;\n",(yyvsp[-1].char *));
-    sprintf(buf,"%s++;\n",(yyvsp[-1].char *))
+    printf("DEBUG: %s++;\n",yyvsp[-1]);
+    sprintf(buf,"%s++;\n",yyvsp[-1]);
 
-    (yyval.char *) = strdup(buf);
+    yyval = strdup(buf);
 
     }
-#line 1145 "ProvolOne.tab.c"
+#line 1152 "ProvolOne.tab.c"
     break;
 
   case 5: /* cmd: ZERA ABREPAR ID FECHAPAR  */
-#line 84 "ProvolOne.y"
+#line 86 "ProvolOne.y"
                               {
     
     char buf[500];
 
-    printf("DEBUG: %s = 0;\n",(yyvsp[-1].char *));
-    sprintf(buf,"%s = 0;\n",(yyvsp[-1].char *));
+    printf("DEBUG: %s = 0;\n",yyvsp[-1]);
+    sprintf(buf,"%s = 0;\n",yyvsp[-1]);
 
-    (yyval.char *) = strdup(buf);
+    yyval = strdup(buf);
 
     }
-#line 1160 "ProvolOne.tab.c"
+#line 1167 "ProvolOne.tab.c"
     break;
 
   case 6: /* cmd: ENQUANTO ID FACA cmds FIM  */
-#line 95 "ProvolOne.y"
+#line 97 "ProvolOne.y"
                                {
 
 
-    size_t cmds_len = strlen((yyvsp[-1].char *));
-    size_t cond_len = strlen((yyvsp[-3].char *));
+    size_t cmds_len = strlen(yyvsp[-1]);
+    size_t cond_len = strlen(yyvsp[-3]);
     size_t while_len = 15 + cmds_len + cond_len;
 
-    char* condicao = (yyvsp[-3].char *);
-    char* o_queFazer = (yyvsp[-1].char *);
+    char* condicao = yyvsp[-3];
+    char* o_queFazer = yyvsp[-1];
 
     char *buf = (char*) malloc(sizeof(char)*while_len);
 
-    sprintf(buf,"while(%s){\n%s\n}\n",(yyvsp[-3].char *),(yyvsp[-1].char *));
+    sprintf(buf,"while(%s){\n%s\n}\n",yyvsp[-3],yyvsp[-1]);
 
-    free((yyvsp[-3].char *));
-    free((yyvsp[-1].char *));
+    free(yyvsp[-3]);
+    free(yyvsp[-1]);
 
 }
-#line 1183 "ProvolOne.tab.c"
+#line 1190 "ProvolOne.tab.c"
     break;
 
   case 7: /* cmds: cmds cmd  */
-#line 116 "ProvolOne.y"
+#line 118 "ProvolOne.y"
             {
-        char *buf = (yyvsp[-1].char *);
-        size_t cmd_len = strlen((yyvsp[0].char *));
+        char *buf = yyvsp[-1];
+        size_t cmd_len = strlen(yyvsp[0]);
         size_t cmds_len = strlen(buf);
         size_t new_len = cmd_len + cmds_len + 1;
         buf = realloc(buf,new_len);
     
-        (yyval.char *) = strcat(buf,(yyvsp[0].char *));
-        free((yyvsp[0].char *));
+        yyval = strcat(buf,yyvsp[0]);
+        free(yyvsp[0]);
 
     }
-#line 1199 "ProvolOne.tab.c"
+#line 1206 "ProvolOne.tab.c"
     break;
 
   case 8: /* cmds: cmd  */
-#line 126 "ProvolOne.y"
+#line 128 "ProvolOne.y"
            {
 
-        (yyval.char *) = (yyvsp[0].char *);
+        yyval = yyvsp[0];
 
     }
-#line 1209 "ProvolOne.tab.c"
+#line 1216 "ProvolOne.tab.c"
     break;
 
   case 9: /* varlist: varlist ID  */
-#line 134 "ProvolOne.y"
+#line 136 "ProvolOne.y"
               {
         //nao preciso implementar recursao, o bison faz isso pra mim
-        char *buf = (yyvsp[-1].char *);
-        size_t id_len = strlen((yyvsp[0].char *));
+        char *buf = yyvsp[-1];
+        size_t id_len = strlen(yyvsp[0]);
         size_t varlist_len = strlen(buf);
-        size_t new_len = id_len + varlist_len + 1;
+        size_t new_len = id_len + varlist_len + 2;
         char *buf2 = realloc(buf,new_len);
+        strcat(buf2," ");
     
-        (yyval.char *) = strcat(buf2,(yyvsp[0].char *));
-        free((yyvsp[0].char *));
-    }
-#line 1225 "ProvolOne.tab.c"
-    break;
-
-  case 10: /* varlist: ID  */
-#line 146 "ProvolOne.y"
-        {
-        (yyval.char *) = (yyvsp[0].char *); //retorna ID
+        yyval = strcat(buf2,yyvsp[0]);
+        free(yyvsp[0]);
     }
 #line 1233 "ProvolOne.tab.c"
     break;
 
+  case 10: /* varlist: ID  */
+#line 149 "ProvolOne.y"
+        {
+        yyval = yyvsp[0]; //retorna ID
+    }
+#line 1241 "ProvolOne.tab.c"
+    break;
 
-#line 1237 "ProvolOne.tab.c"
+
+#line 1245 "ProvolOne.tab.c"
 
       default: break;
     }
@@ -1426,7 +1434,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 150 "ProvolOne.y"
+#line 153 "ProvolOne.y"
 
 
 int yyerror(char *s)
