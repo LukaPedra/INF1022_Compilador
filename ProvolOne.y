@@ -11,13 +11,6 @@
     FILE *output;
 
 
-    void go_provol(){
-        fprintf(output,"#include <stdio.h>\nint main(void){\n");
-        
-
-
-    }
-
 %}
 
 

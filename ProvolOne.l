@@ -14,4 +14,4 @@ INC         { return INC;}
 "="         { return IGUAL;}
 "("         { return ABREPAR;}
 ")"         { return FECHAPAR;}
-[a-zA-Z]    {yylval.sval =strdup(yytext); return (ID);}
+[a-zA-Z]    {yylval.content =strdup(yytext); return (ID);}

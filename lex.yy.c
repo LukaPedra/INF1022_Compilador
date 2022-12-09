@@ -791,7 +791,7 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 18 "ProvolOne.l"
-{yylval.sval =strdup(yytext); return (ID);}
+{yylval.content =strdup(yytext); return (ID);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP

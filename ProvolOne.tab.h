@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_PROVOLONE_TAB_H_INCLUDED
+# define YY_YY_PROVOLONE_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -68,22 +68,6 @@ extern int yydebug;
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Token kinds.  */
-#define YYEMPTY -2
-#define YYEOF 0
-#define YYerror 256
-#define YYUNDEF 257
-#define ENTRADA 258
-#define SAIDA 259
-#define FIM 260
-#define FACA 261
-#define ENQUANTO 262
-#define ZERA 263
-#define INC 264
-#define IGUAL 265
-#define ABREPAR 266
-#define FECHAPAR 267
-#define ID 268
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -95,7 +79,7 @@ union YYSTYPE
     int number;
     char* content;
 
-#line 99 "y.tab.h"
+#line 83 "ProvolOne.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -110,4 +94,4 @@ extern YYSTYPE yylval;
 int yyparse (void);
 
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_PROVOLONE_TAB_H_INCLUDED  */

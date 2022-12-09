@@ -82,7 +82,7 @@
 
 
 
-#line 86 "y.tab.c"
+#line 86 "ProvolOne.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -105,84 +105,7 @@
 #  endif
 # endif
 
-/* Use api.header.include to #include this header
-   instead of duplicating it here.  */
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token kinds.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    ENTRADA = 258,                 /* ENTRADA  */
-    SAIDA = 259,                   /* SAIDA  */
-    FIM = 260,                     /* FIM  */
-    FACA = 261,                    /* FACA  */
-    ENQUANTO = 262,                /* ENQUANTO  */
-    ZERA = 263,                    /* ZERA  */
-    INC = 264,                     /* INC  */
-    IGUAL = 265,                   /* IGUAL  */
-    ABREPAR = 266,                 /* ABREPAR  */
-    FECHAPAR = 267,                /* FECHAPAR  */
-    ID = 268                       /* ID  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
-#endif
-/* Token kinds.  */
-#define YYEMPTY -2
-#define YYEOF 0
-#define YYerror 256
-#define YYUNDEF 257
-#define ENTRADA 258
-#define SAIDA 259
-#define FIM 260
-#define FACA 261
-#define ENQUANTO 262
-#define ZERA 263
-#define INC 264
-#define IGUAL 265
-#define ABREPAR 266
-#define FECHAPAR 267
-#define ID 268
-
-/* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-#line 18 "ProvolOne.y"
-
-    char name[20];
-    int number;
-    char* content;
-
-#line 171 "y.tab.c"
-
-};
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
-#endif
-
-
-extern YYSTYPE yylval;
-
-
-int yyparse (void);
-
-
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#include "ProvolOne.tab.h"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -1191,7 +1114,7 @@ yyreduce:
     /*LEMBRAR DE USAR O VL2 AQUI :)*/
     /*VL2 NECESSARIAMENTE É UMA VARIAVEL DE VL1 NECESSARIAMENTE*/
 }
-#line 1195 "y.tab.c"
+#line 1118 "ProvolOne.tab.c"
     break;
 
   case 3: /* cmd: ID IGUAL ID  */
@@ -1202,7 +1125,7 @@ yyreduce:
     fprintf(output,"%s = %s;\n",(yyvsp[-2].name),(yyvsp[0].name));
 
     }
-#line 1206 "y.tab.c"
+#line 1129 "ProvolOne.tab.c"
     break;
 
   case 4: /* cmd: INC ABREPAR ID FECHAPAR  */
@@ -1215,7 +1138,7 @@ yyreduce:
     fprintf(output,"%s++\n",buf);
 
     }
-#line 1219 "y.tab.c"
+#line 1142 "ProvolOne.tab.c"
     break;
 
   case 5: /* cmd: ZERA ABREPAR ID FECHAPAR  */
@@ -1226,7 +1149,7 @@ yyreduce:
     fprintf(output,"%s = 0;\n",(yyvsp[-1].name));
 
     }
-#line 1230 "y.tab.c"
+#line 1153 "ProvolOne.tab.c"
     break;
 
   case 6: /* cmd: ENQUANTO ID FACA cmds FIM  */
@@ -1242,7 +1165,7 @@ yyreduce:
     fprintf(output,"}");
 
 }
-#line 1246 "y.tab.c"
+#line 1169 "ProvolOne.tab.c"
     break;
 
   case 7: /* cmds: cmds cmd  */
@@ -1250,7 +1173,7 @@ yyreduce:
             {
         //nao preciso implementar recursao, o bison faz isso pra mim
     }
-#line 1254 "y.tab.c"
+#line 1177 "ProvolOne.tab.c"
     break;
 
   case 8: /* cmds: cmd  */
@@ -1258,7 +1181,7 @@ yyreduce:
          {
         (yyval.content) = (yyvsp[0].number); //retorna ID
     }
-#line 1262 "y.tab.c"
+#line 1185 "ProvolOne.tab.c"
     break;
 
   case 9: /* varlist: varlist ID  */
@@ -1268,7 +1191,7 @@ yyreduce:
         char buf[25];
         (yyval.content) = buf;
     }
-#line 1272 "y.tab.c"
+#line 1195 "ProvolOne.tab.c"
     break;
 
   case 10: /* varlist: ID  */
@@ -1276,11 +1199,11 @@ yyreduce:
         {
         (yyval.content) = (yyvsp[0].name); //retorna ID
     }
-#line 1280 "y.tab.c"
+#line 1203 "ProvolOne.tab.c"
     break;
 
 
-#line 1284 "y.tab.c"
+#line 1207 "ProvolOne.tab.c"
 
       default: break;
     }
